@@ -68,3 +68,54 @@ Just copy and paste this code into the Firefox's console (I didn't tried on Chro
 ```
 
 When the script finishes, you can run it again with the new items you've discovered
+
+
+### Bookmarklet script
+
+If you want to add the script to your bookmarks, use this code instead:
+
+```
+javascript:(function(){
+    let items = Array.from(document.querySelectorAll('div.item'));
+    if (items.length === 0) {
+        alert('No elements with class "item" found');
+        return;
+    }
+    items = items.sort(() => Math.random() - 0.5);
+    const endX = window.innerWidth * 0.2;
+    const endY = window.innerHeight * 0.2;
+    function simulateDragForItem(item, index) {
+        const rect = item.getBoundingClientRect();
+        let startX = rect.left + rect.width / 2;
+        let startY = rect.top + rect.height / 2;
+        item.dispatchEvent(new MouseEvent('mousedown', {
+            bubbles: true, cancelable: true, view: window,
+            clientX: startX, clientY: startY
+        }));
+        const steps = 10;
+        const delay = 10;
+        function simulateMouseMove(step) {
+            if (step > steps) {
+                item.dispatchEvent(new MouseEvent('mouseup', {
+                    bubbles: true, cancelable: true, view: window,
+                    clientX: endX, clientY: endY
+                }));
+                if (index < items.length - 1) {
+                    setTimeout(() => simulateDragForItem(items[index + 1], index + 1), 200);
+                }
+                return;
+            }
+            const progress = step / steps;
+            const currentX = startX + (endX - startX) * progress;
+            const currentY = startY + (endY - startY) * progress;
+            item.dispatchEvent(new MouseEvent('mousemove', {
+                bubbles: true, cancelable: true, view: window,
+                clientX: currentX, clientY: currentY
+            }));
+            setTimeout(() => simulateMouseMove(step + 1), delay);
+        }
+        simulateMouseMove(1);
+    }
+    simulateDragForItem(items[0], 0);
+})();
+```
