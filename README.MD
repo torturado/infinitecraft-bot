@@ -1,6 +1,6 @@
 ## InfiniteCraft bot, auto complete infinitecraft
 
-Just copy and paste this code in the Firefox console (I didn't tried on Chrome):
+Just copy and paste this code into the Firefox's console (I didn't tried on Chrome):
 
 ```
 (function simulateClickAndDragAllToSameSpot() {
